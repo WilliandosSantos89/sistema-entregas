@@ -79,7 +79,16 @@ class App:
         campo("Número do Pedido", "numero_pedido")
         campo("Nome do Cliente",  "cliente")
         campo("Endereço",         "endereco")
-        campo("Horário Previsto (HH:MM)", "horario_previsto")
+        #campo("Horário Previsto (HH:MM)", "horario_previsto")#
+        
+        tk.Label(frame, text="Horário Previsto", font=FONTE_NORMAL,
+         bg=COR_FUNDO, fg=COR_TEXTO,
+         anchor="w").pack(fill="x", pady=(8, 0))
+        horario_var = tk.StringVar(value=datetime.now().strftime("%H:%M"))
+        horario_entry = tk.Entry(frame, textvariable=horario_var,
+                                font=FONTE_NORMAL, relief="solid", bd=1)
+        horario_entry.pack(fill="x", ipady=5)
+        campos["horario_previsto"] = horario_entry
 
         tk.Label(frame, text="Status", font=FONTE_NORMAL,
                  bg=COR_FUNDO, fg=COR_TEXTO,
