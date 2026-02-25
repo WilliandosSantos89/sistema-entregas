@@ -32,6 +32,16 @@ def criar_tabelas():
         )
     """)
 
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS registros_saida (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            horario_inicio TEXT NOT NULL,
+            horario_saida TEXT,
+            saiu_no_prazo INTEGER,
+            data TEXT NOT NULL
+        )
+    """)
+
     conn.commit()
     conn.close()
 
@@ -51,6 +61,31 @@ def registrar_historico(entrega_id, status):
         INSERT INTO historico_status (entrega_id, status, horario)
         VALUES (?, ?, ?)
     """, (entrega_id, status, datetime.now().strftime("%H:%M")))
+    conn.commit()
+    conn.close()
+
+def iniciar_cronometro():
+    conn = conectar()
+    cursor = conn.cursor()
+    agora = datetime.now().strftime("%H:%M:%S")
+    cursor.execute("""
+        INSERT INTO registros_saida (horario_inicio, data)
+        VALUES (?, ?)
+    """, (agora, date.today().isoformat()))
+    registro_id = cursor.lastrowid
+    conn.commit()
+    conn.close()
+    return registro_id
+
+def registrar_saida(registro_id, saiu_no_prazo):
+    conn = conectar()
+    cursor = conn.cursor()
+    agora = datetime.now().strftime("%H:%M:%S")
+    cursor.execute("""
+        UPDATE registros_saida
+        SET horario_saida = ?, saiu_no_prazo = ?
+        WHERE id = ?
+    """, (agora, 1 if saiu_no_prazo else 0, registro_id))
     conn.commit()
     conn.close()
 
