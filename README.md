@@ -1,12 +1,12 @@
 # 📦 Sistema de Entregas
 
-Aplicação desktop desenvolvida em Python para registro, acompanhamento e análise de entregas no setor logístico — construída a partir de um problema real observado na operação diária.
+Aplicação desktop desenvolvida em Python para registro, acompanhamento e análise de entregas no setor logístico — construída a partir de um problema real observado na operação diária de uma empresa farmacêutica.
 
 ---
 
 ## 💡 Origem do Projeto
 
-Trabalhando diretamente na operação de entregas de uma empresa farmacêutica, identifiquei gargalos concretos no processo: ausência de rastreabilidade por etapa, conferência manual em papel no encerramento do turno e falta de visibilidade sobre as causas de atraso.
+Trabalhando diretamente na operação de entregas, identifiquei gargalos concretos no processo: ausência de rastreabilidade por etapa, conferência manual em papel no encerramento do turno, falta de visibilidade sobre as causas de atraso e nenhum controle sobre o tempo de organização antes da saída para rota.
 
 Este sistema foi desenvolvido para resolver esses problemas de forma prática, leve e sem dependência de infraestrutura externa.
 
@@ -14,13 +14,32 @@ Este sistema foi desenvolvido para resolver esses problemas de forma prática, l
 
 ## ✅ Funcionalidades
 
-- Registro de entregas com numeração automática sequencial (`ENT-001`, `ENT-002`...)
+### 📦 Registro de Entregas
+- Numeração automática sequencial no formato `ENT-001`, `ENT-002`...
 - Horário de registro preenchido automaticamente e editável
-- Acompanhamento em tempo real com campo de observações por entrega
-- Fluxo completo de status: `Aguardando Retirada → Em Rota → Entregue / Devolvido / Pendente`
-- Atualização de status com histórico registrado por horário
+- Campo de acompanhamento para observações em tempo real por entrega
+- Fluxo completo de status:
+
+```
+Aguardando Retirada → Em Rota → Entregue / Devolvido / Pendente
+```
+
+### 🔄 Acompanhamento
 - Listagem de todas as entregas do dia em tabela
-- Relatório diário automático com totais, percentual de entregas no prazo e acompanhamento mais frequente
+- Atualização de status com novo acompanhamento a qualquer momento
+- Histórico completo de cada mudança de status registrado por horário
+
+### 🚗 Cronômetro de Saída
+- Botão **Iniciar Rota** dispara cronômetro regressivo de 5 minutos
+- Alerta visual progressivo: verde → amarelo (2 min) → vermelho (1 min)
+- Alerta sonoro ao zerar o tempo
+- Confirmação de saída registra horário real e se saiu dentro do prazo
+
+### 📊 Relatório Diário
+- Total de entregas e distribuição por status
+- Percentual de entregas concluídas no prazo
+- Acompanhamento mais frequente do dia
+- Total de saídas realizadas e percentual dentro do prazo
 
 ---
 
@@ -44,6 +63,22 @@ sistema-entregas/
 ├── app.py        # Interface gráfica e lógica de navegação
 ├── banco.py      # Conexão, criação de tabelas e funções de banco
 └── entregas.db   # Banco de dados gerado automaticamente na primeira execução
+```
+
+### Estrutura do banco de dados
+
+```
+entregas
+├── id, numero_pedido, cliente, endereco
+├── horario_previsto, horario_real
+├── status, acompanhamento, data
+
+historico_status
+├── id, entrega_id, status, horario
+
+registros_saida
+├── id, horario_inicio, horario_saida
+├── saiu_no_prazo, data
 ```
 
 ---
@@ -72,6 +107,7 @@ O banco de dados é criado automaticamente na primeira execução.
 - [ ] Exportação do relatório diário em PDF ou CSV
 - [ ] Filtro de entregas por status e período
 - [ ] Sistema web integrado com notificação ao cliente no momento do despacho
+- [ ] Otimização de rota no mapa com ponto de partida fixo na loja
 - [ ] Painel gerencial com histórico por entregador
 
 ---
